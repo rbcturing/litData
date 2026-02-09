@@ -151,7 +151,7 @@ class MixedDataModule(pl.LightningDataModule):
         """
         dataset_val = DocumentClassificationDataset(
             hyperparameters=self.hyperparameters,
-            input_dir=self.hyperparameters["val_shards"],
+            input_dir=self.hyperparameters["val_shard"],
         )
         dataset_val.image_transform = self.transform
         print(f"Length of the val dataset: {len(dataset_val)}")

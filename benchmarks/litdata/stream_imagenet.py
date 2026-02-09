@@ -32,6 +32,8 @@ def to_rgb(img):
     else:
         if img.mode == "L":
             img = img.convert("RGB")
+        elif img.mode == "P":
+            pass  # leave palette as-is for downstream
     return img
 
 
