@@ -120,7 +120,7 @@ def main():
         total = 0
         t0 = time.perf_counter()
         for batch in tqdm(dataloader, desc=f"Epoch {epoch + 1}/{args.epochs}", mininterval=1):
-            total += len(batch)
+            total += batch[0].size(0)
         elapsed = time.perf_counter() - t0
         print(
             f"[RESULT] Epoch {epoch + 1}: Processed {total} samples in {elapsed:.2f}s "

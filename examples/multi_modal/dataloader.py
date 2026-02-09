@@ -131,7 +131,7 @@ class MixedDataModule(pl.LightningDataModule):
         """
         dataset_train = DocumentClassificationDataset(
             hyperparameters=self.hyperparameters,
-            input_dir=self.hyperparameters["train_shards"],
+            input_dir=self.hyperparameters["train_shard"],
         )
 
         dataset_train.image_transform = self.augmentation

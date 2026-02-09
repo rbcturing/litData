@@ -60,14 +60,14 @@ def lightning_training(model_dir: str, hyperparameters: dict) -> object:
         trainer.validate(
             model,
             data_module,
-            ckpt_path=f"{hyperparameters['model_dir']}/{hyperparameters['model_filename']}.ckpt",
+            ckpt_path="trained_model",
         )
     if hyperparameters["test_mode"] == "on":
         logger.info("Test Model")
         trainer.test(
             model,
             data_module,
-            ckpt_path=f"{hyperparameters['model_dir']}/{hyperparameters['model_filename']}.ckpt",
+            ckpt_path="trained_model",
         )
     return trainer
 

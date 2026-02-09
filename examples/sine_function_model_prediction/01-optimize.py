@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # The optimize function writes data in an optimized format.
     ld.optimize(
         fn=sine_function,  # the function applied to each input
-        inputs=list(np.linspace(-5, 5, 1000)),  # the inputs to the function (here it's a list of numbers)
+        inputs=list(np.linspace(0, 5, 1000)),  # the inputs to the function (here it's a list of numbers)
         output_dir="example_optimize_dataset",  # optimized data is stored here
         num_workers=4,  # The number of workers on the same machine
         chunk_size=50,  # number of items in each chunk (1000/50 = 20 chunks should be made)
