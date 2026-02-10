@@ -51,7 +51,7 @@ class DocumentClassificationDataset(StreamingDataset):
             [
                 transforms.Resize(size=224),
                 transforms.ToTensor(),
-                transforms.Normalize([0.5], [0.5], [0.5]),
+                transforms.Normalize([0.5], [0.5]),
             ]
         )
         EC = EncoderAndTokenizer()
@@ -110,7 +110,7 @@ class MixedDataModule(pl.LightningDataModule):
                 transforms.RandomHorizontalFlip(),
                 transforms.CenterCrop(size=224),
                 transforms.ToTensor(),
-                transforms.Normalize([0.5], [0.5], [0.5]),
+                transforms.Normalize([0.5], [0.5]),
             ]
         )
         # Preprocessing steps applied to validation and test set.
@@ -118,7 +118,7 @@ class MixedDataModule(pl.LightningDataModule):
             [
                 transforms.Resize(size=224),
                 transforms.ToTensor(),
-                transforms.Normalize([0.5], [0.5], [0.5]),
+                transforms.Normalize([0.5], [0.5]),
             ]
         )
 

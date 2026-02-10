@@ -42,13 +42,13 @@ def get_class_from_filepath(filepath: str, classes: dict) -> int:
 def get_inputs(input_dir: str):
     """Get inputs for optimization: file paths and class indices."""
     classes = load_imagenet_class_index()
-    filepaths = np.random.permutation(
-        [
-            os.path.join(root, filename)
-            for root, _, filenames in tqdm(walk(input_dir), smoothing=0)
-            for filename in filenames
-        ]
-    )
+    import random
+    filepaths = [
+        os.path.join(root, filename)
+        for root, _, filenames in tqdm(walk(input_dir), smoothing=0)
+        for filename in filenames
+    ]
+    random.shuffle(filepaths)
     return [(filepath, get_class_from_filepath(filepath, classes)) for filepath in filepaths]
 
 

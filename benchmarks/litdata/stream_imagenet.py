@@ -30,10 +30,8 @@ def to_rgb(img):
         if img.shape[0] == 4:
             img = img[:3]
     else:
-        if img.mode == "L":
+        if img.mode != "RGB":
             img = img.convert("RGB")
-        elif img.mode == "P":
-            pass  # leave palette as-is for downstream
     return img
 
 
