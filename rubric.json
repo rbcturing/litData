@@ -9,7 +9,7 @@
 			"weight": 1
 		},
 		{
-			"criterion": "Identifies in benchmarks/ffcv/stream_imagenet.py that the normalize parameter has inverted logic in the image_pipeline: when normalize is True it applies T.ToDtype (simple scaling) instead of NormalizeImage with ImageNet statistics, and when normalize is False it applies NormalizeImage instead of simple scaling, completely reversing the intended behavior",
+			"criterion": "Identifies in benchmarks/ffcv/stream_imagenet.py line ~67 that the image_pipeline ternary is reversed: the code uses T.ToDtype(torch.float32, scale=True) when normalize is True and NormalizeImage(IMAGENET_MEAN, IMAGENET_STD, np.float32) when normalize is False; it should apply NormalizeImage when normalize is True and T.ToDtype when False (per the parameter docstring)",
 			"weight": 1
 		},
 		{
