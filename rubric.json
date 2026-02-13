@@ -2,22 +2,22 @@
   "upload_directory": "/tmp/files/",
   "output_directory": "/tmp/outputs/",
   "system_prompt": "You are an expert code reviewer. Analyze the provided codebase for bugs, security issues, and correctness problems. Provide actionable feedback. All files are located in /tmp/files",
-  "task_prompt": "You are an expert code reviewer. Your task is to analyze the litdata codebase. Identify bugs, wrong sample counts, off-by-one errors, integer overflow in byte conversion, worker assignment imbalance, subsample argmax boundary, arithmetic errors in replay sampling, missing scheme validation in indexer, cache clear error handling, and Subset index range in FFCV write. Focus on: benchmarks/stream_raw_imagenet.py batch count, src/litdata/utilities/format.py overflow in _convert_bytes_to_int, src/litdata/processing/data_processor.py remainder distribution order, src/litdata/utilities/subsample.py argmax comparison, src/litdata/streaming/dataset.py _replay_sampling, src/litdata/raw/indexer.py scheme validation for local paths, src/litdata/cli/handler/cache.py clear_cache when directory does not exist, and benchmarks/ffcv/write_imagenet.py Subset range. Write your findings to /tmp/outputs/review.md",
+  "task_prompt": "You are an expert code reviewer. Your task is to analyze the litdata codebase. Identify bugs, wrong sample counts, off-by-one errors, integer overflow in byte conversion, worker assignment imbalance, subsample argmax boundary, arithmetic errors in replay sampling, benchmark CLI validation logic, litdata stream benchmark sample count, and linspace point count in examples. Focus on: benchmarks/stream_raw_imagenet.py batch count, .github/benchmark/benchmark.py user/org validation, benchmarks/litdata/stream_imagenet.py sample accumulation, examples/sine_function_model_prediction/01-optimize.py input count, src/litdata/utilities/format.py overflow in _convert_bytes_to_int, src/litdata/processing/data_processor.py remainder distribution order, src/litdata/utilities/subsample.py argmax comparison, and src/litdata/streaming/dataset.py _replay_sampling. Write your findings to /tmp/outputs/review.md",
   "rubric": [
     {
       "criterion": "Identifies the wrong sample count in benchmarks/stream_raw_imagenet.py where total uses len(batch) (number of batch keys/tensors) instead of the actual batch size (e.g. batch[0].size(0)), so processed sample count is incorrect",
       "weight": 1
     },
     {
-      "criterion": "Identifies the missing scheme validation in src/litdata/raw/indexer.py in the build_or_load_index method where the check for parsed_url.scheme being truthy is removed (line ~84), causing local paths to be incorrectly rejected as unsupported schemes",
+      "criterion": "Identifies the validation logic error in .github/benchmark/benchmark.py in LitDataBenchmark.__init__ where the first check uses 'or' (config.user is None or config.org is None) instead of 'and', making it impossible to run with only one of user or org set",
       "weight": 1
     },
     {
-      "criterion": "Identifies in src/litdata/cli/handler/cache.py that clear_cache calls shutil.rmtree with ignore_errors=False, causing the CLI to raise when the default cache directory does not exist",
+      "criterion": "Identifies the wrong sample count in benchmarks/litdata/stream_imagenet.py where num_samples is incremented by len(data) instead of data[0].shape[0], undercounting streamed samples",
       "weight": 1
     },
     {
-      "criterion": "Identifies the off-by-one in benchmarks/ffcv/write_imagenet.py where Subset is created with range(subset + 1) instead of range(subset), including one extra sample (or index error when subset equals dataset size)",
+      "criterion": "Identifies the off-by-one in examples/sine_function_model_prediction/01-optimize.py where np.linspace(-5, 5, 999) is used instead of 1000 points, producing 999 samples",
       "weight": 1
     },
     {

