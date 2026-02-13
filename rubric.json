@@ -1,0 +1,40 @@
+{
+  "upload_directory": "/tmp/files/",
+  "output_directory": "/tmp/outputs/",
+  "system_prompt": "You are an expert code reviewer. Analyze the provided codebase for bugs, security issues, and correctness problems. Provide actionable feedback. All files are located in /tmp/files",
+  "task_prompt": "You are an expert code reviewer. Your task is to analyze the litdata codebase. Identify bugs, wrong sample counts, off-by-one errors, integer overflow in byte conversion, worker assignment imbalance, subsample argmax boundary, arithmetic errors in replay sampling, missing scheme validation in indexer, cache clear error handling, and Subset index range in FFCV write. Focus on: benchmarks/stream_raw_imagenet.py batch count, src/litdata/utilities/format.py overflow in _convert_bytes_to_int, src/litdata/processing/data_processor.py remainder distribution order, src/litdata/utilities/subsample.py argmax comparison, src/litdata/streaming/dataset.py _replay_sampling, src/litdata/raw/indexer.py scheme validation for local paths, src/litdata/cli/handler/cache.py clear_cache when directory does not exist, and benchmarks/ffcv/write_imagenet.py Subset range. Write your findings to /tmp/outputs/review.md",
+  "rubric": [
+    {
+      "criterion": "Identifies the wrong sample count in benchmarks/stream_raw_imagenet.py where total uses len(batch) (number of batch keys/tensors) instead of the actual batch size (e.g. batch[0].size(0)), so processed sample count is incorrect",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the missing scheme validation in src/litdata/raw/indexer.py in the build_or_load_index method where the check for parsed_url.scheme being truthy is removed (line ~84), causing local paths to be incorrectly rejected as unsupported schemes",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies in src/litdata/cli/handler/cache.py that clear_cache calls shutil.rmtree with ignore_errors=False, causing the CLI to raise when the default cache directory does not exist",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the off-by-one in benchmarks/ffcv/write_imagenet.py where Subset is created with range(subset + 1) instead of range(subset), including one extra sample (or index error when subset equals dataset size)",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the silent integer overflow bug in src/litdata/utilities/format.py in the _convert_bytes_to_int function where float multiplication is converted to int without overflow checking (line ~31), potentially causing data loss for very large cache size specifications",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the worker assignment imbalance in src/litdata/processing/data_processor.py in the _map_items_to_workers_sequentially function where remainder distribution is changed from reverse iteration to forward iteration (line ~353), causing load imbalance when chunk counts are not evenly divisible",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the off-by-one error in subsample logic in src/litdata/utilities/subsample.py in the subsample_filenames_and_roi function where >= is changed to > in argmax (line ~51), causing incorrect chunk selection when cumsum_sizes exactly equals item_count",
+      "weight": 1
+    },
+    {
+      "criterion": "Identifies the arithmetic error in src/litdata/streaming/dataset.py in the _replay_sampling function where divisible_num_batches_yielded is computed with - 1 (line ~759), causing off-by-one errors in worker index replay during dataloader state resumption",
+      "weight": 1
+    }
+  ]
+}

