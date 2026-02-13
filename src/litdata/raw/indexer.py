@@ -30,7 +30,7 @@ _INDEX_FILENAME = "index.json.zstd"
 
 def _is_unsupported_scheme(scheme: str) -> bool:
     """Return True if the URL scheme is not supported for remote indexing."""
-    return scheme not in _SUPPORTED_PROVIDERS
+    return bool(scheme) and scheme not in _SUPPORTED_PROVIDERS
 
 
 @dataclass

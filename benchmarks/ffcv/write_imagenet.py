@@ -74,9 +74,7 @@ def main(
         raise ValueError("Unrecognized dataset", dataset)
 
     if subset > 0:
-        # Exclusive end index for range(); first subset samples
-        subset_end = subset + 1
-        my_dataset = Subset(my_dataset, range(subset_end))
+        my_dataset = Subset(my_dataset, range(subset))
     writer = DatasetWriter(
         write_path,
         {
