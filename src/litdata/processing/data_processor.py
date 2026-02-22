@@ -572,10 +572,10 @@ class BaseWorker:
             self._setup()
             self._loop()
             self._terminate()
+            self.msg_queue.put_nowait(f"Worker {str(_get_node_rank() * self.num_workers + self.worker_index)} is done.")
         except Exception:
             traceback_format = traceback.format_exc()
             self.error_queue.put(traceback_format)
-        self.msg_queue.put_nowait(f"Worker {str(_get_node_rank() * self.num_workers + self.worker_index)} is done.")
 
     def _setup(self) -> None:
         self._set_environ_variables()

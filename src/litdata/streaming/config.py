@@ -18,6 +18,8 @@ from collections import defaultdict
 from time import sleep, time
 from typing import Any, Optional
 
+from filelock import FileLock
+
 from litdata.constants import _INDEX_FILENAME, _MAX_WAIT_TIME
 from litdata.streaming.compression import _COMPRESSORS, Compressor
 from litdata.streaming.downloader import get_downloader
@@ -207,18 +209,22 @@ class ChunksConfig:
             if (time() - start_time) > _MAX_WAIT_TIME:
                 raise FileNotFoundError(f"The {local_chunkpath} hasn't been found.")
 
-        with open(local_chunkpath, "rb") as f:
-            data = f.read()
+        lock_path = target_local_chunkpath + ".decompress_lock"
+        with FileLock(lock_path):
+            if os.path.exists(target_local_chunkpath):
+                return
+            with open(local_chunkpath, "rb") as f:
+                data = f.read()
 
-        # delete the files only if they were downloaded
-        if self._downloader is not None:
-            with contextlib.suppress(FileNotFoundError):
-                os.remove(local_chunkpath)
+            # delete the files only if they were downloaded
+            if self._downloader is not None:
+                with contextlib.suppress(FileNotFoundError):
+                    os.remove(local_chunkpath)
 
-        data = self._compressor.decompress(data)
+            data = self._compressor.decompress(data)
 
-        with open(target_local_chunkpath, "wb") as f:
-            f.write(data)
+            with open(target_local_chunkpath, "wb") as f:
+                f.write(data)
 
     @property
     def intervals(self) -> list[Interval]:

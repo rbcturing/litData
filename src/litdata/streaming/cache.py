@@ -105,13 +105,14 @@ class Cache:
             on_demand_bytes=on_demand_bytes,
         )
         self._is_done = False
-        self._distributed_env = _DistributedEnv.detect()
+        self._distributed_env: _DistributedEnv | None = None
         self._rank: int | None = None
 
     @property
     def rank(self) -> int:
         """Returns the rank of the Cache."""
         if self._rank is None:
+            self._distributed_env = _DistributedEnv.detect()
             self._worker_env = _WorkerEnv.detect()
             self._rank = self._distributed_env.global_rank * self._worker_env.world_size + self._worker_env.rank
         return self._rank

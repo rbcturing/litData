@@ -10,6 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
 from typing import Any
 
 from litdata.constants import _TQDM_AVAILABLE
@@ -28,7 +29,13 @@ def _convert_bytes_to_int(bytes_str: str) -> int:
         bytes_str = bytes_str.lower().strip()
         if bytes_str.lower().endswith(suffix):
             try:
-                return int(float(bytes_str[0 : -len(suffix)]) * _FORMAT_TO_RATIO[suffix])
+                value = float(bytes_str[0 : -len(suffix)]) * _FORMAT_TO_RATIO[suffix]
+                result = int(value)
+                if result > sys.maxsize or result < -sys.maxsize - 1:
+                    raise OverflowError(
+                        f"Value {bytes_str} overflows integer range (max {sys.maxsize} bytes)."
+                    )
+                return result
             except ValueError:
                 raise ValueError(
                     f"Unsupported value/suffix {bytes_str}. Supported suffix are "
