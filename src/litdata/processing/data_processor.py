@@ -76,7 +76,7 @@ def _get_node_rank() -> int:
 
 def _get_fast_dev_run() -> int:
     """Returns whether fast dev mode is enabled."""
-    return bool(int(os.getenv("DATA_OPTIMIZER_FAST_DEV_RUN", 1)))
+    return bool(int(os.getenv("DATA_OPTIMIZER_FAST_DEV_RUN", 0)))
 
 
 def _get_default_cache() -> str:
@@ -350,7 +350,7 @@ def _map_items_to_workers_sequentially(
         num_items_per_worker: list[int] = [items_per_worker_count for _ in range(world_size)]
         reminder = len(user_items) % world_size
 
-        for worker_idx in range(0, len(num_items_per_worker)):
+        for worker_idx in range(len(num_items_per_worker) - 1, -1, -1):
             if reminder == 0:
                 break
             num_items_per_worker[worker_idx] += 1

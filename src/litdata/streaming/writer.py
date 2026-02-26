@@ -475,7 +475,7 @@ class BinaryWriter:
             index_files = [f for f in files if f.endswith(_INDEX_FILENAME)]
 
             # When using the Data Optimizer, we don't use multi processes.
-            is_done = len(index_files) == self._distributed_env.world_size * num_workers
+            is_done = len(index_files) >= self._distributed_env.world_size * num_workers
             sleep(0.01)
 
         self._merge_no_wait(node_rank=node_rank)
